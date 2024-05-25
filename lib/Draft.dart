@@ -43,7 +43,7 @@ class _DraftState extends State<Draft> {
       )
         ..from = [MailAddress('shaurya23', 'shauryas23@iitk.ac.in')]
         ..to = [MailAddress('shaurya', to)]
-        ..subject = '${subject}::${DateTime.now()}';
+        ..subject = subject;
       final mimeMessage = builder.buildMimeMessage();
       final sendResponse = await client.sendMessage(mimeMessage);
       print('message sent: ${sendResponse.isOkStatus}');
