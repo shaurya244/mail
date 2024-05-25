@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mail/Draft.dart';
+import 'package:mail/emailbox.dart';
 
 
 class Inbox extends StatelessWidget {
@@ -95,6 +96,7 @@ class Inbox extends StatelessWidget {
           ),
         ),
       ),
+      body:ListView(children: [emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer()],), 
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
         child: FloatingActionButton(
