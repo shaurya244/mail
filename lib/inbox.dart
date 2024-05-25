@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mail/Draft.dart';
+import 'package:mail/email.dart';
 import 'package:mail/emailbox.dart';
 
 
@@ -96,7 +97,52 @@ class Inbox extends StatelessWidget {
           ),
         ),
       ),
-      body:ListView(children: [emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer(),emailviewer()],), 
+      body:ListView(children: [TextButton(onPressed: (){
+        Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),TextButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Email()),
+                (_) => true);
+      }, child: emailviewer()),]), 
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
         child: FloatingActionButton(
