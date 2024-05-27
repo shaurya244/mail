@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:enough_mail/enough_mail.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 String smtpServerHost = 'smtp.cc.iitk.ac.in';
 int smtpServerPort = 465;
 bool isSmtpServerSecure = true;
@@ -14,8 +15,9 @@ class Draft extends StatefulWidget {
 }
 
 class _DraftState extends State<Draft> {
-  final username = dotenv.env["iitkmail"];
-  final password = dotenv.env["iitk_pass"];
+  final mybox = Hive.box('user data');
+  // final username = dotenv.env["iitkmail"];
+  // final password = dotenv.env["iitk_pass"];
   final totextcontroller=TextEditingController();
   final subjecttextcontroller=TextEditingController();
   final bodytextcontroller=TextEditingController();
@@ -24,14 +26,15 @@ class _DraftState extends State<Draft> {
   String body='';
   smtpExample() async {
     final client = SmtpClient('enough.de', isLogEnabled: true);
+    
     try {
       await client.connectToServer(smtpServerHost, smtpServerPort,
           isSecure: isSmtpServerSecure);
       await client.ehlo();
       if (client.serverInfo.supportsAuth(AuthMechanism.plain)) {
-        await client.authenticate(username!, password!, AuthMechanism.plain);
+        await client.authenticate(mybox.get('username'), mybox.get('password'), AuthMechanism.plain);
       } else if (client.serverInfo.supportsAuth(AuthMechanism.login)) {
-        await client.authenticate(username!, password!, AuthMechanism.login);
+        await client.authenticate(mybox.get('username'),mybox.get('password'), AuthMechanism.login);
       } else {
         return;
       }
@@ -41,7 +44,7 @@ class _DraftState extends State<Draft> {
         
         
       )
-        ..from = [MailAddress('shaurya23', 'shauryas23@iitk.ac.in')]
+        ..from = [MailAddress('${mybox.get('username')}', '${mybox.get('username')}@iitk.ac.in')]
         ..to = [MailAddress('shaurya', to)]
         ..subject = subject;
       final mimeMessage = builder.buildMimeMessage();
@@ -52,13 +55,15 @@ class _DraftState extends State<Draft> {
     }
   }
 
+   
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 229, 217, 229),
-        title: Text("From : shauryas23@iitk.ac.in",style: TextStyle(fontSize: 14),),
+        title: Text("From :${mybox.get('username')}@iitk.ac.in",style: TextStyle(fontSize: 14),),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
@@ -103,7 +108,8 @@ class _DraftState extends State<Draft> {
                 subject=subjecttextcontroller.text;
                 body=bodytextcontroller.text;
               });
-              smtpExample();},
+              smtpExample();
+              },
                child: Text("send"))  ,
         
           ],

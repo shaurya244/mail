@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
-
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:mail/inbox.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,15 +9,22 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await dotenv.load(fileName: '.env');
+  await Hive.initFlutter();
+  var box = await Hive.openBox('user data');
   runApp(const MyApp());
+
+  
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  
+  
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -36,7 +44,14 @@ class Login_Form extends StatefulWidget {
 }
 
 class _Login_FormState extends State<Login_Form> {
+  
+    final usertextcontroller=TextEditingController();
+    final passtextcontoller=TextEditingController();
+    var username='';
+    var pass='';
   final formkey = GlobalKey<FormState>();
+  final mybox=Hive.box('user data');
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -65,11 +80,13 @@ class _Login_FormState extends State<Login_Form> {
                 ],
               ),
               child: TextFormField(
+                controller: usertextcontroller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Login id',
                   contentPadding: EdgeInsets.all(20),
                 ),
+
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "please fill something";
@@ -93,6 +110,7 @@ class _Login_FormState extends State<Login_Form> {
                 ],
               ),
               child: TextFormField(
+                controller: passtextcontoller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Password',
@@ -105,6 +123,8 @@ class _Login_FormState extends State<Login_Form> {
                   return null;
                 },
               ),
+                
+              
             ),
           ),
           Padding(
@@ -122,10 +142,18 @@ class _Login_FormState extends State<Login_Form> {
               ),
               child: ElevatedButton(
                   onPressed: () {
+                    setState(() {
+                      username=usertextcontroller.text;
+                      pass=passtextcontoller.text;
+                    });
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const Inbox()),
                         (_) => false);
+                        mybox.put("username", '${username}@iitk.ac.in');
+                        mybox.put("password",pass);
+
+                    
                   },
                   child: const Text("Login")),
             ),
