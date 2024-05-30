@@ -1,13 +1,22 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+
 import 'package:flutter/material.dart';
 import 'package:mail/Draft.dart';
 import 'package:mail/email.dart';
 import 'package:mail/emailbox.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mail/profile.dart';
 
+class Inbox extends StatefulWidget {
+const Inbox({super.key});
 
-class Inbox extends StatelessWidget {
-  const Inbox({super.key});
+  @override
+  State<Inbox> createState() => _InboxState();
+}
+
+class _InboxState extends State<Inbox> {
+  final mybox = Hive.box('user data');
 
   @override
   Widget build(BuildContext context) {
@@ -67,14 +76,14 @@ class Inbox extends StatelessWidget {
         toolbarHeight: 90,
         backgroundColor: Color.fromARGB(255, 199, 174, 255),
         title: SizedBox(
-          width: 500,
+          width: 400,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(onPressed:(){}, icon: Icon(Icons.account_circle)),
+              IconButton(onPressed:(){profile();}, icon: Icon(Icons.account_circle)),
               
               Container(
-                width: 270,
+                width: 230,
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 175, 141, 248),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -97,6 +106,7 @@ class Inbox extends StatelessWidget {
           ),
         ),
       ),
+      
       body:ListView(children: [TextButton(onPressed: (){
         Navigator.pushAndRemoveUntil(
                 context,

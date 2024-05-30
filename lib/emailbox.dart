@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class emailviewer extends StatefulWidget {
   const emailviewer({super.key});
@@ -8,8 +9,11 @@ class emailviewer extends StatefulWidget {
 }
 
 class _emailviewerState extends State<emailviewer> {
+  final emaildata = Hive.box('email data');
+
   @override
   Widget build(BuildContext context) {
+
     return Row(
       
       children: [Expanded(
@@ -17,7 +21,7 @@ class _emailviewerState extends State<emailviewer> {
           decoration: BoxDecoration(color: Color.fromARGB(94, 245, 186, 255)),
           height: 120,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12,8,8,8),
+            padding: const EdgeInsets.fromLTRB(3,8,8,8),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -30,10 +34,12 @@ class _emailviewerState extends State<emailviewer> {
                   
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("USERNAME",style:TextStyle(fontWeight: FontWeight.w500,fontSize: 13),),
-                    Text("The subject will come here",style: TextStyle(fontWeight: FontWeight.w300),),
-                   Text("few part of the body will come here ",
-                    style: TextStyle(fontWeight: FontWeight.w500),overflow: TextOverflow.ellipsis,softWrap:false,maxLines: 2,)
+                     Expanded(child: Text(emaildata.get('from')!,style:TextStyle(fontWeight: FontWeight.w500,fontSize: 13),overflow:TextOverflow.ellipsis,)),
+                    Expanded(child: Text(emaildata.get('subject')!,style: TextStyle(fontWeight: FontWeight.w300),overflow:TextOverflow.ellipsis)),
+                   Expanded(
+                     child: Text("few part of the body will come here  ",
+                      style: TextStyle(fontWeight: FontWeight.w500),overflow: TextOverflow.ellipsis),
+                   )
                     
                   ],
                 )

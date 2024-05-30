@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
 
-
+import 'package:enough_mail/enough_mail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:mail/inbox.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+String imapServerHost = 'qasid.iitk.ac.in';
+int imapServerPort =993;
+bool isImapServerSecure = true;
 
 
 
@@ -12,9 +15,53 @@ void main() async {
   await dotenv.load(fileName: '.env');
   await Hive.initFlutter();
   var box = await Hive.openBox('user data');
+  var emailbox= await Hive.openBox('email data');
+  imapExample();
   runApp(const MyApp());
 
   
+}
+
+  void printMessage(MimeMessage message) {
+  final emaildata=Hive.box('email data');
+  emaildata.put('from','${message.from?[0]}');
+
+  emaildata.put('subject',message.decodeSubject());
+  if (!message.isTextPlainMessage()) {
+    print(' content-type: ${message.mediaType}');
+  } else {
+    final plainText = message.decodeTextPlainPart();
+    if (plainText != null) {
+      final lines = plainText.split('\r\n');
+      for (final line in lines) {
+        if (line.startsWith('>')) {
+          // break when quoted text starts
+          break;
+        }
+        print(line);
+      }
+    }
+  }
+}
+imapExample() async {
+  final client = ImapClient(isLogEnabled: false);
+  try {
+    await client.connectToServer(imapServerHost, imapServerPort,
+        isSecure: isImapServerSecure);
+    await client.login('shauryas23', 'Bauxite@1');
+    final mailboxes = await client.listMailboxes();
+    print('mailboxes: $mailboxes');
+    await client.selectInbox();
+    // fetch 10 most recent messages:
+    final fetchResult = await client.fetchRecentMessages(
+        messageCount: 5, criteria: 'BODY.PEEK[]');
+    for (final message in fetchResult.messages) {
+      printMessage(message);
+    }
+    await client.logout();
+  } on ImapException catch (e) {
+    print('IMAP failed with $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -36,23 +83,19 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class Login_Form extends StatefulWidget {
   const Login_Form({super.key});
-
   @override
   State<Login_Form> createState() => _Login_FormState();
 }
-
 class _Login_FormState extends State<Login_Form> {
-  
-    final usertextcontroller=TextEditingController();
-    final passtextcontoller=TextEditingController();
-    var username='';
-    var pass='';
+  final usertextcontroller=TextEditingController();
+  final passtextcontoller=TextEditingController();
+  var username='';
+  var pass='';
   final formkey = GlobalKey<FormState>();
   final mybox=Hive.box('user data');
-
+  
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -111,8 +154,7 @@ class _Login_FormState extends State<Login_Form> {
                 ],
               ),
               child: TextFormField(
-
-                 controller: passtextcontoller,
+                controller: passtextcontoller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Password',
@@ -124,9 +166,7 @@ class _Login_FormState extends State<Login_Form> {
                   }
                   return null;
                 },
-              ),
-                
-              
+              ),  
             ),
           ),
           Padding(
@@ -152,17 +192,15 @@ class _Login_FormState extends State<Login_Form> {
                         context,
                         MaterialPageRoute(builder: (context) => const Inbox()),
                         (_) => false);
-                        mybox.put("username", '${username}@iitk.ac.in');
-                        mybox.put("password",pass);
-
-                    
+                        mybox.put("username", username);
+                        mybox.put("password",pass);  
+                        
                   },
                   child: const Text("Login")),
             ),
           )
         ],
-      ),
-      
+      ),  
     );
   }
 }

@@ -8,8 +8,19 @@ class profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      
+    return AlertDialog(
+      content: Container(
+        height: 100,
+        child: Column(
+          children: [
+            Text("name"),
+            Text("userid")
+
+          ],
+        ),
+      ),
     );
+      
+  
   }
 }

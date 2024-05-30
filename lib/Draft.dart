@@ -26,15 +26,15 @@ class _DraftState extends State<Draft> {
   String body='';
   smtpExample() async {
     final client = SmtpClient('enough.de', isLogEnabled: true);
-    
+    final username='${mybox.get('username')}@iitk.ac.in';
     try {
       await client.connectToServer(smtpServerHost, smtpServerPort,
           isSecure: isSmtpServerSecure);
       await client.ehlo();
       if (client.serverInfo.supportsAuth(AuthMechanism.plain)) {
-        await client.authenticate(mybox.get('username'), mybox.get('password'), AuthMechanism.plain);
+        await client.authenticate(username, mybox.get('password'), AuthMechanism.plain);
       } else if (client.serverInfo.supportsAuth(AuthMechanism.login)) {
-        await client.authenticate(mybox.get('username'),mybox.get('password'), AuthMechanism.login);
+        await client.authenticate(username,mybox.get('password'), AuthMechanism.login);
       } else {
         return;
       }
