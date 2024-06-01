@@ -1,55 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
+import 'package:mail/email.dart';
+// ignore: camel_case_types
 class emailviewer extends StatefulWidget {
-  const emailviewer({super.key});
+  final String name ;
+  final String email;
+  final String subject ;
+  final String message;
+  final DateTime date;
+
+  const emailviewer({
+    Key? key,
+    required this.name,
+    required this.email,
+    required this.subject,
+    required this. message,
+    required this.date,
+  }):super(key: key);
 
   @override
   State<emailviewer> createState() => _emailviewerState();
 }
 
 class _emailviewerState extends State<emailviewer> {
-  final emaildata = Hive.box('email data');
 
   @override
   Widget build(BuildContext context) {
 
-    return Row(
-      
-      children: [Expanded(
-        child:Container(
-          decoration: BoxDecoration(color: Color.fromARGB(94, 245, 186, 255)),
-          height: 120,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(3,8,8,8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.account_circle_outlined,size: 35,),
-                SizedBox(
-                  height: 100,
-                  width: 10,
-                ),
-                Column(
-                  
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                     Expanded(child: Text(emaildata.get('from')!,style:TextStyle(fontWeight: FontWeight.w500,fontSize: 13),overflow:TextOverflow.ellipsis,)),
-                    Expanded(child: Text(emaildata.get('subject')!,style: TextStyle(fontWeight: FontWeight.w300),overflow:TextOverflow.ellipsis)),
-                   Expanded(
-                     child: Text("few part of the body will come here  ",
-                      style: TextStyle(fontWeight: FontWeight.w500),overflow: TextOverflow.ellipsis),
-                   )
-                    
-                  ],
-                )
-            
-              ],
-            ),
-          ),
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Container(
         
-        ),)
-      ],
+        child: ListTile(
+          leading: CircleAvatar(child: Text(widget.name[0],style: TextStyle(color: Colors.white),),),
+          title: Text(widget.name),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.subject,style:TextStyle(fontWeight: FontWeight.bold),maxLines: 1 ,),
+              Text(widget.message,style:TextStyle(fontWeight: FontWeight.w200),maxLines: 1,),
+            ],
+          ),
+          trailing: Column(
+            children: [
+              Text("date")
+            ],
+          ),
+          onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => EmailPage(name:widget.name, email: widget.email, subject: widget.subject, message:widget.message, date: widget.date) ));},
+        ),
+      ),
     );
-  }
+}
 }

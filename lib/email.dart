@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-class Email extends StatefulWidget {
-  const Email({super.key});
+class EmailPage extends StatefulWidget {
+    final String name ;
+  final String email;
+  final String subject ;
+  final String message;
+  final DateTime date;
+    const EmailPage({
+    Key? key,
+    required this.name,
+    required this.email,
+    required this.subject,
+    required this. message,
+    required this.date,
+  }):super(key: key);
 
   @override
-  State<Email> createState() => _EmailState();
+  State<EmailPage> createState() => _EmailPageState();
 }
 
-class _EmailState extends State<Email> {
+class _EmailPageState extends State<EmailPage> {
   final email = Hive.box('email data');
   
   @override
@@ -22,26 +34,25 @@ class _EmailState extends State<Email> {
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(from!
-              
-             
-            ),
-            Text(subject!
+        child: ListView(
 
-              
-            ),
-            SizedBox(
-              height: 200,
-              child: Text("body"
-             
+            children: [
+              Text(widget.email
+                
+               
               ),
-            ),
-           
-        
-          ],
+              Text(widget.subject
+          
+                
+              ),
+              Text(widget.message
+               
+                ),
+              
+             
+          
+            ],
+          
         ),
       ),
     );
