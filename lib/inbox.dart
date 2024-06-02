@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mail/Draft.dart';
 import 'package:mail/emailbox.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mail/profile.dart';
+import 'package:mail/main.dart';
+
 class Inbox extends StatefulWidget {
   @override
   State<Inbox> createState() => _InboxState();
@@ -56,95 +57,124 @@ class _InboxState extends State<Inbox> {
     }
     return fetchedMessages;
   }
+  void _showDialog(){
+    final userdata= Hive.box('user data');
+    showDialog(context: context, builder: (context){
+      return AlertDialog(content: SizedBox(height: 150,width: 100, child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+              'assets/iitk-removebg-preview.png',
+              height: 75,
+            ),
+          Text(userdata.get('username')),
+          Text('${userdata.get('username')}@iitk.ac.in')
+        ],
+      ),),);
+    });
+  }
+  final userdata= Hive.box('user data');
+  final searchcontroller=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Drawer(
-          child: ListView(
-        children: [
-          DrawerHeader(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      endDrawer: Padding(
+        padding: const EdgeInsets.fromLTRB(0,0,0,12),
+        child: Drawer(
+          
+          child: ListView(children: [
+            DrawerHeader(child: Column(
               children: [
-                ClipRect(
-                  child: Image.asset(
-                    'assets/iitk-removebg-preview.png',
-                    height: 100,
-                  ),
-                ),
-                Text("Shaurya Srivastava"),
-                Text("230961"),
+                 Image.asset(
+                'assets/iitk-removebg-preview.png',
+                height: 100,
+              ),
+              Text(userdata.get('username')),
               ],
             ),
-          ),
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ListTile(title: Text("Inbox"), leading: Icon(Icons.mail)),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ListTile(
-                      title: Text("Draft"),
-                      leading: Icon(Icons.border_color_outlined)),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ListTile(title: Text("Sent"), leading: Icon(Icons.send)),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ListTile(title: Text("Bin"), leading: Icon(Icons.delete)),
-                ],
-              )
-            ],
-          )
-        ],
-      )),
+            ),
+            Column(
+              children: [
+                 ListTile(
+                  title: Text('Inbox'),
+                  leading: Icon(Icons.mail),
+                  onTap: () {Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  Inbox()),
+                  (_) => true);
+                    
+                  },
+                 ),
+                 ListTile(
+                  title: Text('Profile'),
+                  leading: Icon(Icons.account_circle_outlined),
+                  onTap: _showDialog,
+                 ),
+                 ListTile(
+                  title: Text('Draft'),
+                  leading: Icon(Icons.border_color_rounded),
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Draft()),
+                  (_) => true);
+                
+                  },
+                 ),
+                   ListTile(
+                    title: Text('Logout'),
+                    leading: Icon(Icons.outbond),
+                    onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyApp()),
+                  (_) => true);
+                
+                  },
+
+                  )
+              ],
+            ),
+            
+          ],),
+        ),
+      ),
       appBar: AppBar(
+        
         automaticallyImplyLeading: false,
         toolbarHeight: 90,
         backgroundColor: Color.fromARGB(255, 199, 174, 255),
-        title: SizedBox(
-          width: 400,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        title: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(onPressed:(){Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const profile()),
-                (_) => true);}, icon: Icon(Icons.account_circle)),
-              Container(
-                width: 230,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 175, 141, 248),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(255, 109, 96, 138),
-                        offset: Offset(2, 2),
-                        blurRadius: 10)
-                  ],
-                ),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "Search your email here",
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(10),
+            IconButton(onPressed:(){_showDialog();}, icon: Icon(Icons.account_circle,size: 38,)),
+            SizedBox(height: 90,width:20),
+                          Container(
+                  width: 230,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 175, 141, 248),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(255, 109, 96, 138),
+                          offset: Offset(2, 2),
+                          blurRadius: 10)
+                    ],
+                  ),
+                  child: TextFormField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      hintText: "Search your email here",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(10),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+          
+          ],),
         ),
+  
       ),
       
        body:RefreshIndicator(

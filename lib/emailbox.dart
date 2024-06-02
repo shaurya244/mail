@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:mail/email.dart';
 // ignore: camel_case_types
 class emailviewer extends StatefulWidget {
@@ -42,7 +43,7 @@ class _emailviewerState extends State<emailviewer> {
           ),
           trailing: Column(
             children: [
-              Text("date")
+              Text(GetTimeAgo.parse(widget.date))
             ],
           ),
           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => EmailPage(name:widget.name, email: widget.email, subject: widget.subject, message:widget.message, date: widget.date) ));},

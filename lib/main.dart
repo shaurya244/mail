@@ -48,7 +48,26 @@ class _Login_FormState extends State<Login_Form> {
   var pass = '';
   final formkey = GlobalKey<FormState>();
   final mybox = Hive.box('user data');
+  void navigation(){
+   Navigator.pushAndRemoveUntil(
+   context,
+   MaterialPageRoute(builder: (context) => Inbox()),
+   (_) => false);
+  }
+  void showerror(){
+    showDialog(context: context, builder: (context){
+      return AlertDialog(
+        content: Container(
+          height: 200,
+          width:200,
+          child: Center(child: Text('Wrong credentials')),
+        ),
+      );
+    });
+
+  }
   login() async {
+     var a=1;
     final client = SmtpClient('enough.de', isLogEnabled: true);
     final username = '${mybox.get('username')}@iitk.ac.in';
     try {
@@ -58,20 +77,22 @@ class _Login_FormState extends State<Login_Form> {
       if (client.serverInfo.supportsAuth(AuthMechanism.plain)) {
         await client.authenticate(
             username, mybox.get('password'), AuthMechanism.plain);
+            navigation();
+            
       } else if (client.serverInfo.supportsAuth(AuthMechanism.login)) {
         await client.authenticate(
             username, mybox.get('password'), AuthMechanism.login);
+            navigation();
+            
       } else {
-        return AlertDialog(
-          content: Card(
-            color: Colors.white,
-            child: Text("login failed"),
-          ),
-        );
+        print('wornd credentials');
       }
-    } on SmtpException catch (e) {
+    } 
+    on SmtpException catch (e) {
       print('SMTP failed with $e');
+      showerror();
     }
+     
   }
 
   @override
@@ -169,10 +190,9 @@ class _Login_FormState extends State<Login_Form> {
                     mybox.put("username", username);
                     mybox.put("password", pass);
                     login();
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => Inbox()),
-                        (_) => false);
+                     
+                    
+                    
                   },
                   child: const Text("Login")),
             ),
