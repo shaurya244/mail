@@ -57,7 +57,7 @@ class _InboxState extends State<Inbox> {
     }
     return fetchedMessages;
   }
-  void _showDialog(){
+  void _showDialogCredentials(){
     final userdata= Hive.box('user data');
     showDialog(context: context, builder: (context){
       return AlertDialog(content: SizedBox(height: 150,width: 100, child: Column(
@@ -108,7 +108,7 @@ class _InboxState extends State<Inbox> {
                  ListTile(
                   title: Text('Profile'),
                   leading: Icon(Icons.account_circle_outlined),
-                  onTap: _showDialog,
+                  onTap: _showDialogCredentials,
                  ),
                  ListTile(
                   title: Text('Draft'),
@@ -148,7 +148,7 @@ class _InboxState extends State<Inbox> {
           padding: const EdgeInsets.all(5.0),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-            IconButton(onPressed:(){_showDialog();}, icon: Icon(Icons.account_circle,size: 38,)),
+            IconButton(onPressed:(){_showDialogCredentials();}, icon: Icon(Icons.account_circle,size: 38,)),
             SizedBox(height: 90,width:20),
                           Container(
                   width: 230,
