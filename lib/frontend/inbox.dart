@@ -7,6 +7,7 @@ import 'package:mail/frontend/emailbox.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mail/frontend/main.dart';
 import 'package:mail/services/imapservices.dart';
+import 'package:mail/services/fetchEmails.dart';
 
 class Inbox extends StatefulWidget {
   @override
@@ -18,18 +19,14 @@ class _InboxState extends State<Inbox> {
   @override
   void initState(){
     super.initState();
-    fetchEmails();
+    setEmails();
   }
-     Future<void> fetchEmails() async {
-      final userdata= Hive.box('user data');
-      final fetchedEmails = await imapExample(
-      userName: userdata.get('username'), 
-      password: userdata.get('password'), 
-    );
+     Future<void> setEmails() async {
+      final fetchedEmails = await fetchEmails();
       setState(() {
       emails = fetchedEmails.reversed.toList(); // Reverse the list here
     });
-  }
+  }   
 // here you had the frontend 
   void _showDialogCredentials(){
     final userdata= Hive.box('user data');
@@ -152,7 +149,7 @@ class _InboxState extends State<Inbox> {
       ),
       
        body:RefreshIndicator(
-         onRefresh: fetchEmails,
+         onRefresh: setEmails,
          child: ListView.builder(itemCount:emails.length,itemBuilder:(context,index){
                     final email = emails[index];
             final from = email.from?.first;

@@ -1,20 +1,23 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
-import 'package:enough_mail/enough_mail.dart';
+
+import 'package:mail/frontend/ShowError.dart';
 import 'package:mail/frontend/inbox.dart';
 import 'package:mail/services/authentication.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 String smtpServerHost = 'mmtp.iitk.ac.in';
 int smtpServerPort = 465;
 bool isSmtpServerSecure = true;
 
 void main() async {
-  await dotenv.load(fileName: '.env');
+
   await Hive.initFlutter();
   var box = await Hive.openBox('user data');
-  var emailbox = await Hive.openBox('email data');
+  var mybox = await Hive.openBox('email data');
+
   runApp(const MyApp());
+
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -59,31 +62,14 @@ class _Login_FormState extends State<Login_Form> {
       );
     });
   }
-  login() async {
-     
-    final client = SmtpClient('enough.de', isLogEnabled: true);
-    final username = '${mybox.get('username')}@iitk.ac.in';
-    try {
-      await client.connectToServer(smtpServerHost, smtpServerPort,
-          isSecure: isSmtpServerSecure);
-      await client.ehlo();
-      if (client.serverInfo.supportsAuth(AuthMechanism.plain)) {
-        await client.authenticate(
-            username, mybox.get('password'), AuthMechanism.plain);
-            navigation();     
-      } else if (client.serverInfo.supportsAuth(AuthMechanism.login)) {
-        await client.authenticate(
-            username, mybox.get('password'), AuthMechanism.login);
-            navigation();      
-      } else {
-        print('wornd credentials');
-      }
-    } 
-    on SmtpException catch (e) {
-      print('Wrong credentials $e');
-      showerror();
-    }  
+  void getinfo() async{
+    if(mybox.get('username')!=null || mybox.get('password')!=null){
+      navigation();
+
+    }
+
   }
+  
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -171,23 +157,14 @@ class _Login_FormState extends State<Login_Form> {
                 ],
               ),
               child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       username = usertextcontroller.text;
-                      
                       pass = passtextcontoller.text;
                     });
                     mybox.put("username", username);
                     mybox.put("password", pass);
-                    final a=LoginAuthentication(mybox.get('username'),mybox.get('password'));
-                    print(a);
-                    if(LoginAuthentication(mybox.get('username'),mybox.get('password'))==1){
-                      navigation();
-                    }
-                    else{
-                      showerror();
-                    }
-                  
+                    ((await LoginAuthentication(mybox.get('username'),mybox.get('password')))==1)?navigation():showerror();
                   },
                   child: const Text("Login")),
             ),

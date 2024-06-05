@@ -38,15 +38,13 @@ class _EmailPageState extends State<EmailPage> {
         child: ListView(
 
             children: [
-              Text(widget.email
+              Text('From : ${widget.email}'
                 
                
               ),
-              Text(widget.subject
-          
-                
+              Text('Subject : ${widget.subject}',style: TextStyle(fontWeight: FontWeight.bold), 
               ),
-              Text(widget.message
+              Text(widget.message,
                
                 ),
               
