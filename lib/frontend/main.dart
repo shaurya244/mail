@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
 
-import 'package:mail/frontend/ShowError.dart';
+
 import 'package:mail/frontend/inbox.dart';
 import 'package:mail/services/authentication.dart';
 import 'package:hive_flutter/hive_flutter.dart';

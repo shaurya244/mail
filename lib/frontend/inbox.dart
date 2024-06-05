@@ -6,7 +6,7 @@ import 'package:mail/frontend/Draft.dart';
 import 'package:mail/frontend/emailbox.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mail/frontend/main.dart';
-import 'package:mail/services/imapservices.dart';
+
 import 'package:mail/services/fetchEmails.dart';
 
 class Inbox extends StatefulWidget {
