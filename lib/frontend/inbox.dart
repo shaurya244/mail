@@ -2,10 +2,11 @@
 
 import "package:enough_mail/enough_mail.dart";
 import 'package:flutter/material.dart';
-import 'package:mail/Draft.dart';
-import 'package:mail/emailbox.dart';
+import 'package:mail/frontend/Draft.dart';
+import 'package:mail/frontend/emailbox.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mail/main.dart';
+import 'package:mail/frontend/main.dart';
+import 'package:mail/services/imapservices.dart';
 
 class Inbox extends StatefulWidget {
   @override
@@ -21,10 +22,7 @@ class _InboxState extends State<Inbox> {
   }
      Future<void> fetchEmails() async {
       final userdata= Hive.box('user data');
-    final fetchedEmails = await imapExample(
-      imapServerHost: 'qasid.iitk.ac.in', // Replace with your IMAP server host
-      imapServerPort: 993, // IMAP over SSL/TLS
-      isImapServerSecure: true,
+      final fetchedEmails = await imapExample(
       userName: userdata.get('username'), 
       password: userdata.get('password'), 
     );
@@ -32,31 +30,7 @@ class _InboxState extends State<Inbox> {
       emails = fetchedEmails.reversed.toList(); // Reverse the list here
     });
   }
-  Future<List<MimeMessage>> imapExample({
-    required String imapServerHost,
-    required int imapServerPort,
-    required bool isImapServerSecure,
-    required String userName,
-    required String password,
-  }) async {
-    final client = ImapClient(isLogEnabled: false);
-    List<MimeMessage> fetchedMessages = [];
-    try {
-      await client.connectToServer(imapServerHost, imapServerPort,
-          isSecure: isImapServerSecure);
-      await client.login(userName, password);
-      await client.selectInbox();
-      final fetchResult = await client.fetchRecentMessages(
-        messageCount: 25,
-        criteria: 'BODY.PEEK[]',
-      );
-      fetchedMessages = fetchResult.messages;
-      await client.logout();
-    } on ImapException catch (e) {
-      print('IMAP failed with $e');
-    }
-    return fetchedMessages;
-  }
+// here you had the frontend 
   void _showDialogCredentials(){
     final userdata= Hive.box('user data');
     showDialog(context: context, builder: (context){

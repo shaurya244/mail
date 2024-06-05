@@ -1,11 +1,10 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
-
 import 'package:enough_mail/enough_mail.dart';
+import 'package:mail/frontend/inbox.dart';
+import 'package:mail/services/authentication.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:mail/inbox.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 String smtpServerHost = 'mmtp.iitk.ac.in';
 int smtpServerPort = 465;
 bool isSmtpServerSecure = true;
@@ -15,13 +14,10 @@ void main() async {
   await Hive.initFlutter();
   var box = await Hive.openBox('user data');
   var emailbox = await Hive.openBox('email data');
-
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -34,13 +30,11 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class Login_Form extends StatefulWidget {
   const Login_Form({super.key});
   @override
   State<Login_Form> createState() => _Login_FormState();
 }
-
 class _Login_FormState extends State<Login_Form> {
   final usertextcontroller = TextEditingController();
   final passtextcontoller = TextEditingController();
@@ -54,7 +48,7 @@ class _Login_FormState extends State<Login_Form> {
    MaterialPageRoute(builder: (context) => Inbox()),
    (_) => false);
   }
-  void showerror(){
+  void showerror(){ 
     showDialog(context: context, builder: (context){
       return AlertDialog(
         content: Container(
@@ -64,10 +58,9 @@ class _Login_FormState extends State<Login_Form> {
         ),
       );
     });
-
   }
   login() async {
-     var a=1;
+     
     final client = SmtpClient('enough.de', isLogEnabled: true);
     final username = '${mybox.get('username')}@iitk.ac.in';
     try {
@@ -77,24 +70,20 @@ class _Login_FormState extends State<Login_Form> {
       if (client.serverInfo.supportsAuth(AuthMechanism.plain)) {
         await client.authenticate(
             username, mybox.get('password'), AuthMechanism.plain);
-            navigation();
-            
+            navigation();     
       } else if (client.serverInfo.supportsAuth(AuthMechanism.login)) {
         await client.authenticate(
             username, mybox.get('password'), AuthMechanism.login);
-            navigation();
-            
+            navigation();      
       } else {
         print('wornd credentials');
       }
     } 
     on SmtpException catch (e) {
-      print('SMTP failed with $e');
+      print('Wrong credentials $e');
       showerror();
-    }
-     
+    }  
   }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -185,14 +174,20 @@ class _Login_FormState extends State<Login_Form> {
                   onPressed: () {
                     setState(() {
                       username = usertextcontroller.text;
+                      
                       pass = passtextcontoller.text;
                     });
                     mybox.put("username", username);
                     mybox.put("password", pass);
-                    login();
-                     
-                    
-                    
+                    final a=LoginAuthentication(mybox.get('username'),mybox.get('password'));
+                    print(a);
+                    if(LoginAuthentication(mybox.get('username'),mybox.get('password'))==1){
+                      navigation();
+                    }
+                    else{
+                      showerror();
+                    }
+                  
                   },
                   child: const Text("Login")),
             ),

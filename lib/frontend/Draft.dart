@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:enough_mail/enough_mail.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mail/services/stmpservices.dart';
 String smtpServerHost = 'smtp.cc.iitk.ac.in';
 int smtpServerPort = 465;
 bool isSmtpServerSecure = true;
@@ -9,7 +10,6 @@ bool isSmtpServerSecure = true;
 
 class Draft extends StatefulWidget {
   const Draft({super.key});
-
   @override
   State<Draft> createState() => _DraftState();
 }
@@ -24,36 +24,7 @@ class _DraftState extends State<Draft> {
   String to='';
   String subject='';
   String body='';
-  smtpExample() async {
-    final client = SmtpClient('enough.de', isLogEnabled: true);
-    final username='${mybox.get('username')}@iitk.ac.in';
-    try {
-      await client.connectToServer(smtpServerHost, smtpServerPort,
-          isSecure: isSmtpServerSecure);
-      await client.ehlo();
-      if (client.serverInfo.supportsAuth(AuthMechanism.plain)) {
-        await client.authenticate(username, mybox.get('password'), AuthMechanism.plain);
-      } else if (client.serverInfo.supportsAuth(AuthMechanism.login)) {
-        await client.authenticate(username,mybox.get('password'), AuthMechanism.login);
-      } else {
-        return;
-      }
-      final builder = MessageBuilder.prepareMultipartAlternativeMessage(
-        plainText: body,
-        htmlText: '<p>${body}</p>'
-        
-        
-      )
-        ..from = [MailAddress('${mybox.get('username')}', '${mybox.get('username')}@iitk.ac.in')]
-        ..to = [MailAddress('shaurya', to)]
-        ..subject = subject;
-      final mimeMessage = builder.buildMimeMessage();
-      final sendResponse = await client.sendMessage(mimeMessage);
-      print('message sent: ${sendResponse.isOkStatus}');
-    } on SmtpException catch (e) {
-      print('SMTP failed with $e');
-    }
-  }
+  
 
    
 
@@ -108,7 +79,7 @@ class _DraftState extends State<Draft> {
                 subject=subjecttextcontroller.text;
                 body=bodytextcontroller.text;
               });
-              smtpExample();
+              smtpExample(mybox.get('username'),mybox.get('password'), subject, body, to);
               },
                child: Text("send"))  ,
         

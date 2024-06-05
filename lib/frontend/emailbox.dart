@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
-import 'package:mail/email.dart';
+import 'package:mail/frontend/email.dart';
 // ignore: camel_case_types
 class emailviewer extends StatefulWidget {
   final String name ;
