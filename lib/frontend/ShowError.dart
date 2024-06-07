@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
 class ShowError extends StatefulWidget {
   const ShowError({super.key});
-
   @override
   State<ShowError> createState() => _ShowErrorState();
 }
-
 class _ShowErrorState extends State<ShowError> {
     showerror(){ 
     showDialog(context: context, builder: (context){

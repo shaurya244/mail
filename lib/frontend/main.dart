@@ -11,11 +11,9 @@ int smtpServerPort = 465;
 bool isSmtpServerSecure = true;
 
 void main() async {
-
   await Hive.initFlutter();
   var box = await Hive.openBox('user data');
   var mybox = await Hive.openBox('email data');
-
   runApp(const MyApp());
 
 }
